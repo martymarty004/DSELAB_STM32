@@ -31,7 +31,7 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-
+#define MYWAIT 1000
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -94,7 +94,7 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   /* USER CODE BEGIN 2 */
-
+  int i;
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -104,6 +104,18 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+    if ((LL_GPIO_ReadReg(GPIOC, IDR) & 0x2000) == 0) {
+
+    	LL_GPIO_WriteReg(GPIOA, ODR, LL_GPIO_ReadReg(GPIOA, ODR) | 0x20);
+
+    } else {
+
+    	LL_GPIO_WriteReg(GPIOA, ODR, LL_GPIO_ReadReg(GPIOA, ODR) & 0xFFDF);
+
+    }
+
+    for (i = 0; i < MYWAIT; i++) {}
+
   }
   /* USER CODE END 3 */
 }
