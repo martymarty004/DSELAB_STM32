@@ -1,0 +1,223 @@
+16:45:56 **** Build of configuration Debug for project Lab7_1 ****
+make -j12 all 
+arm-none-eabi-gcc -mcpu=cortex-m4 -g3 -DDEBUG -c -x assembler-with-cpp -MMD -MP -MF"Startup/startup_stm32f401retx.d" -MT"Startup/startup_stm32f401retx.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Startup/startup_stm32f401retx.o" "../Startup/startup_stm32f401retx.s"
+arm-none-eabi-gcc "../Src/main.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DSTM32 -DSTM32F401RETx -DSTM32F4 -c -I../Inc -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Src/main.d" -MT"Src/main.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Src/main.o"
+arm-none-eabi-gcc "../Src/syscalls.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DSTM32 -DSTM32F401RETx -DSTM32F4 -c -I../Inc -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Src/syscalls.d" -MT"Src/syscalls.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Src/syscalls.o"
+arm-none-eabi-gcc "../Src/sysmem.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DSTM32 -DSTM32F401RETx -DSTM32F4 -c -I../Inc -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Src/sysmem.d" -MT"Src/sysmem.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Src/sysmem.o"
+../Src/main.c:22:4: warning: #warning "FPU is not initialized, but the project is compiling for an FPU. Please initialize the FPU before use." [-Wcpp]
+   22 |   #warning "FPU is not initialized, but the project is compiling for an FPU. Please initialize the FPU before use."
+      |    ^~~~~~~
+arm-none-eabi-gcc -o "Lab7_1.elf" @"objects.list"   -mcpu=cortex-m4 -T"/home/martino/STM32CubeIDE/workspace_2.1.1/Lab7_1/STM32F401RETX_FLASH.ld" --specs=nosys.specs -Wl,-Map="Lab7_1.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: Lab7_1.elf
+ 
+arm-none-eabi-size  Lab7_1.elf 
+arm-none-eabi-objdump -h -S Lab7_1.elf  > "Lab7_1.list"
+   text	   data	    bss	    dec	    hex	filename
+    664	      0	   1568	   2232	    8b8	Lab7_1.elf
+Finished building: default.size.stdout
+ 
+Finished building: Lab7_1.list
+ 
+17:03:27 **** Build of configuration Debug for project Lab7_1 ****
+make -j12 all 
+arm-none-eabi-size  Lab7_1.elf 
+   text	   data	    bss	    dec	    hex	filename
+    664	      0	   1568	   2232	    8b8	Lab7_1.elf
+Finished building: default.size.stdout
+ 
+17:22:39 **** Incremental Build of configuration Debug for project Lab7_1 ****
+make -j12 all 
+arm-none-eabi-gcc "../Src/main.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DSTM32 -DSTM32F401RETx -DSTM32F4 -c -I../Inc -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Src/main.d" -MT"Src/main.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Src/main.o"
+../Src/main.c: In function 'main':
+../Src/main.c:22:13: warning: 'main' is normally a non-static function [-Wmain]
+   22 |         int main(void)
+      |             ^~~~
+../Src/main.c: In function 'main':
+../Src/main.c:48:25: warning: this 'for' clause does not guard... [-Wmisleading-indentation]
+   48 |                         for (i=0; i<MYWAIT; i++);
+      |                         ^~~
+../Src/main.c:49:25: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the 'for'
+   49 |                         {
+      |                         ^
+../Src/main.c:52:9: error: expected declaration or statement at end of input
+   52 |         }
+      |         ^
+../Src/main.c: In function 'main':
+../Src/main.c:52:9: error: expected declaration or statement at end of input
+../Src/main.c: At top level:
+../Src/main.c:22:13: warning: 'main' defined but not used [-Wunused-function]
+   22 |         int main(void)
+      |             ^~~~
+make: *** [Src/subdir.mk:25: Src/main.o] Error 1
+"make -j12 all" terminated with exit code 2. Build might be incomplete.
+17:22:52 **** Incremental Build of configuration Debug for project Lab7_1 ****
+make -j12 all 
+arm-none-eabi-gcc "../Src/main.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DSTM32 -DSTM32F401RETx -DSTM32F4 -c -I../Inc -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Src/main.d" -MT"Src/main.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Src/main.o"
+../Src/main.c: In function 'main':
+../Src/main.c:22:13: warning: 'main' is normally a non-static function [-Wmain]
+   22 |         int main(void)
+      |             ^~~~
+../Src/main.c: In function 'main':
+../Src/main.c:52:9: error: expected declaration or statement at end of input
+   52 |         }
+      |         ^
+../Src/main.c: In function 'main':
+../Src/main.c:52:9: error: expected declaration or statement at end of input
+../Src/main.c: At top level:
+../Src/main.c:22:13: warning: 'main' defined but not used [-Wunused-function]
+   22 |         int main(void)
+      |             ^~~~
+make: *** [Src/subdir.mk:25: Src/main.o] Error 1
+"make -j12 all" terminated with exit code 2. Build might be incomplete.
+17:23:53 **** Incremental Build of configuration Debug for project Lab7_1 ****
+make -j12 all 
+arm-none-eabi-gcc "../Src/main.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DSTM32 -DSTM32F401RETx -DSTM32F4 -c -I../Inc -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Src/main.d" -MT"Src/main.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Src/main.o"
+../Src/main.c: In function 'main':
+../Src/main.c:50:1: error: expected declaration or statement at end of input
+   50 | }
+      | ^
+make: *** [Src/subdir.mk:25: Src/main.o] Error 1
+"make -j12 all" terminated with exit code 2. Build might be incomplete.
+17:24:24 **** Incremental Build of configuration Debug for project Lab7_1 ****
+make -j12 all 
+arm-none-eabi-gcc "../Src/main.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DSTM32 -DSTM32F401RETx -DSTM32F4 -c -I../Inc -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Src/main.d" -MT"Src/main.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Src/main.o"
+arm-none-eabi-gcc -o "Lab7_1.elf" @"objects.list"   -mcpu=cortex-m4 -T"/home/martino/STM32CubeIDE/workspace_2.1.1/Lab7_1/STM32F401RETX_FLASH.ld" --specs=nosys.specs -Wl,-Map="Lab7_1.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: Lab7_1.elf
+ 
+arm-none-eabi-size  Lab7_1.elf 
+arm-none-eabi-objdump -h -S Lab7_1.elf  > "Lab7_1.list"
+   text	   data	    bss	    dec	    hex	filename
+    760	      0	   1568	   2328	    918	Lab7_1.elf
+Finished building: default.size.stdout
+ 
+Finished building: Lab7_1.list
+ 
+18:24:48 **** Build of configuration Debug for project Lab7_1_2 ****
+make -j12 all 
+arm-none-eabi-gcc -mcpu=cortex-m4 -g3 -DDEBUG -c -x assembler-with-cpp -MMD -MP -MF"Startup/startup_stm32f401retx.d" -MT"Startup/startup_stm32f401retx.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Startup/startup_stm32f401retx.o" "../Startup/startup_stm32f401retx.s"
+arm-none-eabi-gcc "../Src/main.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DSTM32 -DSTM32F401RETx -DSTM32F4 -c -I../Inc -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Src/main.d" -MT"Src/main.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Src/main.o"
+arm-none-eabi-gcc "../Src/syscalls.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DSTM32 -DSTM32F401RETx -DSTM32F4 -c -I../Inc -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Src/syscalls.d" -MT"Src/syscalls.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Src/syscalls.o"
+arm-none-eabi-gcc "../Src/sysmem.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DSTM32 -DSTM32F401RETx -DSTM32F4 -c -I../Inc -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Src/sysmem.d" -MT"Src/sysmem.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Src/sysmem.o"
+../Src/main.c:22:4: warning: #warning "FPU is not initialized, but the project is compiling for an FPU. Please initialize the FPU before use." [-Wcpp]
+   22 |   #warning "FPU is not initialized, but the project is compiling for an FPU. Please initialize the FPU before use."
+      |    ^~~~~~~
+arm-none-eabi-gcc -o "Lab7_1_2.elf" @"objects.list"   -mcpu=cortex-m4 -T"/home/martino/STM32CubeIDE/workspace_2.1.1/Lab7_1_2/STM32F401RETX_FLASH.ld" --specs=nosys.specs -Wl,-Map="Lab7_1_2.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: Lab7_1_2.elf
+ 
+arm-none-eabi-size  Lab7_1_2.elf 
+arm-none-eabi-objdump -h -S Lab7_1_2.elf  > "Lab7_1_2.list"
+   text	   data	    bss	    dec	    hex	filename
+    664	      0	   1568	   2232	    8b8	Lab7_1_2.elf
+Finished building: default.size.stdout
+ 
+Finished building: Lab7_1_2.list
+ 
+18:24:55 **** Incremental Build of configuration Debug for project Lab7_1_2 ****
+make -j12 all 
+arm-none-eabi-gcc "../Src/main.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DSTM32 -DSTM32F401RETx -DSTM32F4 -c -I../Inc -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Src/main.d" -MT"Src/main.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Src/main.o"
+../Src/main.c: In function 'main':
+../Src/main.c:55:21: error: invalid type argument of unary '*' (have 'unsigned int')
+   55 |                 if (*GPIOC_IDR[12] == 0) *GPIOA_ODR = *GPIOA_ODR | 0x20;
+      |                     ^~~~~~~~~~~~~~
+make: *** [Src/subdir.mk:25: Src/main.o] Error 1
+"make -j12 all" terminated with exit code 2. Build might be incomplete.
+18:30:52 **** Incremental Build of configuration Debug for project Lab7_1_2 ****
+make -j12 all 
+arm-none-eabi-gcc "../Src/main.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DSTM32 -DSTM32F401RETx -DSTM32F4 -c -I../Inc -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Src/main.d" -MT"Src/main.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Src/main.o"
+arm-none-eabi-gcc -o "Lab7_1_2.elf" @"objects.list"   -mcpu=cortex-m4 -T"/home/martino/STM32CubeIDE/workspace_2.1.1/Lab7_1_2/STM32F401RETX_FLASH.ld" --specs=nosys.specs -Wl,-Map="Lab7_1_2.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: Lab7_1_2.elf
+ 
+arm-none-eabi-size  Lab7_1_2.elf 
+arm-none-eabi-objdump -h -S Lab7_1_2.elf  > "Lab7_1_2.list"
+   text	   data	    bss	    dec	    hex	filename
+    804	      0	   1568	   2372	    944	Lab7_1_2.elf
+Finished building: default.size.stdout
+ 
+Finished building: Lab7_1_2.list
+ 
+18:31:41 **** Incremental Build of configuration Debug for project Lab7_1_2 ****
+make -j12 all 
+arm-none-eabi-size  Lab7_1_2.elf 
+   text	   data	    bss	    dec	    hex	filename
+    804	      0	   1568	   2372	    944	Lab7_1_2.elf
+Finished building: default.size.stdout
+ 
+18:34:48 **** Incremental Build of configuration Debug for project Lab7_1_2 ****
+make -j12 all 
+arm-none-eabi-gcc "../Src/main.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DSTM32 -DSTM32F401RETx -DSTM32F4 -c -I../Inc -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Src/main.d" -MT"Src/main.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Src/main.o"
+arm-none-eabi-gcc -o "Lab7_1_2.elf" @"objects.list"   -mcpu=cortex-m4 -T"/home/martino/STM32CubeIDE/workspace_2.1.1/Lab7_1_2/STM32F401RETX_FLASH.ld" --specs=nosys.specs -Wl,-Map="Lab7_1_2.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: Lab7_1_2.elf
+ 
+arm-none-eabi-size  Lab7_1_2.elf 
+arm-none-eabi-objdump -h -S Lab7_1_2.elf  > "Lab7_1_2.list"
+   text	   data	    bss	    dec	    hex	filename
+    804	      0	   1568	   2372	    944	Lab7_1_2.elf
+Finished building: default.size.stdout
+ 
+Finished building: Lab7_1_2.list
+ 
+18:35:21 **** Clean-only build of configuration Debug for project Lab7_1_1 ****
+make -j12 clean 
+rm -rf ./Startup/startup_stm32f401retx.d ./Startup/startup_stm32f401retx.o
+rm -rf ./Src/main.cyclo ./Src/main.d ./Src/main.o ./Src/main.su ./Src/syscalls.cyclo ./Src/syscalls.d ./Src/syscalls.o ./Src/syscalls.su ./Src/sysmem.cyclo ./Src/sysmem.d ./Src/sysmem.o ./Src/sysmem.su
+rm -rf Lab7_1.elf Lab7_1.list Lab7_1.map default.size.stdout
+ 
+18:35:21 **** Build of configuration Debug for project Lab7_1_1 ****
+make -j12 all 
+arm-none-eabi-gcc -mcpu=cortex-m4 -g3 -DDEBUG -c -x assembler-with-cpp -MMD -MP -MF"Startup/startup_stm32f401retx.d" -MT"Startup/startup_stm32f401retx.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Startup/startup_stm32f401retx.o" "../Startup/startup_stm32f401retx.s"
+arm-none-eabi-gcc "../Src/main.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DSTM32 -DSTM32F401RETx -DSTM32F4 -c -I../Inc -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Src/main.d" -MT"Src/main.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Src/main.o"
+arm-none-eabi-gcc "../Src/syscalls.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DSTM32 -DSTM32F401RETx -DSTM32F4 -c -I../Inc -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Src/syscalls.d" -MT"Src/syscalls.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Src/syscalls.o"
+arm-none-eabi-gcc "../Src/sysmem.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DSTM32 -DSTM32F401RETx -DSTM32F4 -c -I../Inc -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Src/sysmem.d" -MT"Src/sysmem.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Src/sysmem.o"
+arm-none-eabi-gcc -o "Lab7_1_1.elf" @"objects.list"   -mcpu=cortex-m4 -T"/home/martino/STM32CubeIDE/workspace_2.1.1/Lab7_1_1/STM32F401RETX_FLASH.ld" --specs=nosys.specs -Wl,-Map="Lab7_1_1.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: Lab7_1_1.elf
+ 
+arm-none-eabi-size  Lab7_1_1.elf 
+arm-none-eabi-objdump -h -S Lab7_1_1.elf  > "Lab7_1_1.list"
+   text	   data	    bss	    dec	    hex	filename
+    756	      0	   1568	   2324	    914	Lab7_1_1.elf
+Finished building: default.size.stdout
+ 
+Finished building: Lab7_1_1.list
+ 
+18:35:30 **** Incremental Build of configuration Debug for project Lab7_1_2 ****
+make -j12 all 
+arm-none-eabi-size  Lab7_1_2.elf 
+   text	   data	    bss	    dec	    hex	filename
+    804	      0	   1568	   2372	    944	Lab7_1_2.elf
+Finished building: default.size.stdout
+ 
+18:35:42 **** Incremental Build of configuration Debug for project Lab7_1_2 ****
+make -j12 all 
+arm-none-eabi-gcc "../Src/main.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DSTM32 -DSTM32F401RETx -DSTM32F4 -c -I../Inc -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Src/main.d" -MT"Src/main.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Src/main.o"
+arm-none-eabi-gcc -o "Lab7_1_2.elf" @"objects.list"   -mcpu=cortex-m4 -T"/home/martino/STM32CubeIDE/workspace_2.1.1/Lab7_1_2/STM32F401RETX_FLASH.ld" --specs=nosys.specs -Wl,-Map="Lab7_1_2.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: Lab7_1_2.elf
+ 
+arm-none-eabi-size  Lab7_1_2.elf 
+arm-none-eabi-objdump -h -S Lab7_1_2.elf  > "Lab7_1_2.list"
+   text	   data	    bss	    dec	    hex	filename
+    800	      0	   1568	   2368	    940	Lab7_1_2.elf
+Finished building: default.size.stdout
+ 
+Finished building: Lab7_1_2.list
+ 
+18:36:04 **** Incremental Build of configuration Debug for project Lab7_1_2 ****
+make -j12 all 
+arm-none-eabi-size  Lab7_1_2.elf 
+   text	   data	    bss	    dec	    hex	filename
+    800	      0	   1568	   2368	    940	Lab7_1_2.elf
+Finished building: default.size.stdout
+ 
+18:37:49 **** Incremental Build of configuration Debug for project Lab7_1_2 ****
+make -j12 all 
+arm-none-eabi-size  Lab7_1_2.elf 
+   text	   data	    bss	    dec	    hex	filename
+    800	      0	   1568	   2368	    940	Lab7_1_2.elf
+Finished building: default.size.stdout
+ 
+18:40:45 **** Incremental Build of configuration Debug for project Lab7_1_2 ****
+make -j12 all 
+arm-none-eabi-size  Lab7_1_2.elf 
+   text	   data	    bss	    dec	    hex	filename
+    800	      0	   1568	   2368	    940	Lab7_1_2.elf
+Finished building: default.size.stdout
+ 
