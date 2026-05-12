@@ -33,9 +33,8 @@
 /* USER CODE BEGIN PD */
 #define LED_PIN_MASK              0x20U
 #define BUTTON_PIN_MASK           0x2000U
-#define INITIAL_HALF_PERIOD_MS    2000U
-#define MIN_HALF_PERIOD_MS        1U
-#define BUTTON_DEBOUNCE_MS        50U
+#define MYWAIT                    500000U
+#define MIN_WAIT                  1000U
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -98,9 +97,8 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   /* USER CODE BEGIN 2 */
-  uint32_t half_period_ms = INITIAL_HALF_PERIOD_MS;
-  uint32_t elapsed_ms = 0;
-  uint32_t debounce_ms = 0;
+  volatile uint32_t i;
+  uint32_t wait = MYWAIT;
   uint32_t button_was_pressed = 0;
   uint32_t button_is_pressed = 0;
   /* USER CODE END 2 */
@@ -114,30 +112,20 @@ int main(void)
     /* USER CODE BEGIN 3 */
     button_is_pressed = ((LL_GPIO_ReadReg(GPIOC, IDR) & BUTTON_PIN_MASK) == 0U);
 
-    if ((button_is_pressed != 0U) && (button_was_pressed == 0U) && (debounce_ms == 0U))
+    if ((button_is_pressed != 0U) && (button_was_pressed == 0U))
     {
-      if (half_period_ms > MIN_HALF_PERIOD_MS)
+      if (wait > MIN_WAIT)
       {
-        half_period_ms /= 2U;
+        wait /= 2U;
       }
-
-      debounce_ms = BUTTON_DEBOUNCE_MS;
     }
 
     button_was_pressed = button_is_pressed;
 
-    if (elapsed_ms >= half_period_ms)
-    {
-      LL_GPIO_WriteReg(GPIOA, ODR, LL_GPIO_ReadReg(GPIOA, ODR) ^ LED_PIN_MASK);
-      elapsed_ms = 0;
-    }
+    LL_GPIO_WriteReg(GPIOA, ODR, LL_GPIO_ReadReg(GPIOA, ODR) ^ LED_PIN_MASK);
 
-    LL_mDelay(1);
-    elapsed_ms++;
-
-    if (debounce_ms > 0U)
+    for (i = 0; i < wait; i++)
     {
-      debounce_ms--;
     }
   }
   /* USER CODE END 3 */
