@@ -31,7 +31,11 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-
+#define LED_PIN_MASK              0x20U
+#define BUTTON_PIN_MASK           0x2000U
+#define INITIAL_HALF_PERIOD_MS    2000U
+#define MIN_HALF_PERIOD_MS        1U
+#define BUTTON_DEBOUNCE_MS        50U
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -94,7 +98,11 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   /* USER CODE BEGIN 2 */
-
+  uint32_t half_period_ms = INITIAL_HALF_PERIOD_MS;
+  uint32_t elapsed_ms = 0;
+  uint32_t debounce_ms = 0;
+  uint32_t button_was_pressed = 0;
+  uint32_t button_is_pressed = 0;
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -104,6 +112,33 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+    button_is_pressed = ((LL_GPIO_ReadReg(GPIOC, IDR) & BUTTON_PIN_MASK) == 0U);
+
+    if ((button_is_pressed != 0U) && (button_was_pressed == 0U) && (debounce_ms == 0U))
+    {
+      if (half_period_ms > MIN_HALF_PERIOD_MS)
+      {
+        half_period_ms /= 2U;
+      }
+
+      debounce_ms = BUTTON_DEBOUNCE_MS;
+    }
+
+    button_was_pressed = button_is_pressed;
+
+    if (elapsed_ms >= half_period_ms)
+    {
+      LL_GPIO_WriteReg(GPIOA, ODR, LL_GPIO_ReadReg(GPIOA, ODR) ^ LED_PIN_MASK);
+      elapsed_ms = 0;
+    }
+
+    LL_mDelay(1);
+    elapsed_ms++;
+
+    if (debounce_ms > 0U)
+    {
+      debounce_ms--;
+    }
   }
   /* USER CODE END 3 */
 }
@@ -159,19 +194,19 @@ static void MX_GPIO_Init(void)
   LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOA);
 
   /**/
-  LL_GPIO_ResetOutputPin(GPIOC, LL_GPIO_PIN_13);
+  LL_GPIO_ResetOutputPin(GPIOA, LL_GPIO_PIN_5);
 
   /**/
   GPIO_InitStruct.Pin = LL_GPIO_PIN_13;
-  GPIO_InitStruct.Mode = LL_GPIO_MODE_OUTPUT;
-  GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_LOW;
-  GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
+  GPIO_InitStruct.Mode = LL_GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
   LL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
   /**/
   GPIO_InitStruct.Pin = LL_GPIO_PIN_5;
-  GPIO_InitStruct.Mode = LL_GPIO_MODE_INPUT;
+  GPIO_InitStruct.Mode = LL_GPIO_MODE_OUTPUT;
+  GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_LOW;
+  GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
   GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
   LL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
