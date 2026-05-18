@@ -96,7 +96,7 @@ int main(void)
   MX_GPIO_Init();
   MX_TIM3_Init();
   /* USER CODE BEGIN 2 */
-
+  SysTick_Config(SystemCoreClock / 1000);
   /* USER CODE END 2 */
 
   /* Infinite loop */
