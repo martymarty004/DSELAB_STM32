@@ -97,12 +97,27 @@ int main(void)
   MX_TIM3_Init();
   /* USER CODE BEGIN 2 */
 
+  SysTick_Config(SystemCoreClock / 1000);
+
+  uint16_t last_cnt = LL_TIM_ReadReg(TIM3, CNT);
+
+  LL_TIM_WriteReg(TIM3, SR, 0);              // clear flags
+  LL_TIM_WriteReg(TIM3, CR1, TIM_CR1_CEN);   // enable counter
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+ 	uint16_t cnt = LL_TIM_ReadReg(TIM3, CNT);
+
+  	if ((uint16_t)(cnt - last_cnt) >= 250) {
+  		last_cnt = cnt;
+
+   		LL_GPIO_WriteReg(GPIOA, ODR,
+   			LL_GPIO_ReadReg(GPIOA, ODR) ^ LL_GPIO_PIN_10);
+
+    }
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
