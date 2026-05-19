@@ -97,7 +97,7 @@ int main(void)
   MX_TIM3_Init();
   /* USER CODE BEGIN 2 */
 
-  SysTick_Config(SystemCoreClock / 1000);
+  SysTick_Config(SystemCoreClock/1000);
 
   uint16_t last_cnt = LL_TIM_ReadReg(TIM3, CNT);
 
@@ -108,10 +108,12 @@ int main(void)
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
+
   {
  	uint16_t cnt = LL_TIM_ReadReg(TIM3, CNT);
 
-  	if ((uint16_t)(cnt - last_cnt) >= 250) {
+  	// SysClk = 84Mhz, PSC = 83 -> Timer works at 1MHz, toggle every 250 ticks to achieve f_toggle=4KHz -> f=2KHz
+  	if ((uint16_t)(cnt - last_cnt) == 250) {
   		last_cnt = cnt;
 
    		LL_GPIO_WriteReg(GPIOA, ODR,

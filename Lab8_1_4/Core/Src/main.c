@@ -97,12 +97,33 @@ int main(void)
   MX_TIM3_Init();
   /* USER CODE BEGIN 2 */
   SysTick_Config(SystemCoreClock / 1000);
+
+  LL_TIM_ClearFlag_CC1(TIM3);
+  LL_TIM_ClearFlag_CC2(TIM3);
+
+  LL_TIM_EnableCounter(TIM3);
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+  		if (LL_TIM_IsActiveFlag_CC1(TIM3)) {
+
+	    	LL_TIM_ClearFlag_CC1(TIM3);
+
+	    	LL_TIM_OC_SetCompareCH1(TIM3,
+	        	LL_TIM_OC_GetCompareCH1(TIM3) + 200);
+   		}
+
+   		if (LL_TIM_IsActiveFlag_CC2(TIM3)) {
+
+	      	LL_TIM_ClearFlag_CC2(TIM3);
+
+	      	LL_TIM_OC_SetCompareCH2(TIM3,
+	    		LL_TIM_OC_GetCompareCH2(TIM3) + 40);
+     	}
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -186,7 +207,7 @@ static void MX_TIM3_Init(void)
   LL_TIM_DisableARRPreload(TIM3);
   LL_TIM_SetClockSource(TIM3, LL_TIM_CLOCKSOURCE_INTERNAL);
   TIM_OC_InitStruct.OCMode = LL_TIM_OCMODE_TOGGLE;
-  TIM_OC_InitStruct.OCState = LL_TIM_OCSTATE_DISABLE;
+  TIM_OC_InitStruct.OCState = LL_TIM_OCSTATE_ENABLE;
   TIM_OC_InitStruct.OCNState = LL_TIM_OCSTATE_DISABLE;
   TIM_OC_InitStruct.CompareValue = 200;
   TIM_OC_InitStruct.OCPolarity = LL_TIM_OCPOLARITY_HIGH;

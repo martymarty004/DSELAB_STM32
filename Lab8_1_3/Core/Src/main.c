@@ -98,12 +98,37 @@ int main(void)
   /* USER CODE BEGIN 2 */
 
   SysTick_Config(SystemCoreClock / 1000);
+
+  LL_TIM_ClearFlag_CC1(TIM3);
+  LL_TIM_ClearFlag_CC2(TIM3);
+
+  LL_TIM_EnableCounter(TIM3);
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+ 	if (LL_TIM_IsActiveFlag_CC1(TIM3)) {
+
+  		LL_TIM_ClearFlag_CC1(TIM3);
+
+     	LL_GPIO_TogglePin(GPIOA, LL_GPIO_PIN_10);
+
+     	LL_TIM_OC_SetCompareCH1(TIM3,
+        	LL_TIM_OC_GetCompareCH1(TIM3) + 200);
+    }
+
+    if (LL_TIM_IsActiveFlag_CC2(TIM3)) {
+
+        LL_TIM_ClearFlag_CC2(TIM3);
+
+        LL_GPIO_TogglePin(GPIOB, LL_GPIO_PIN_10);
+
+        LL_TIM_OC_SetCompareCH2(TIM3,
+            LL_TIM_OC_GetCompareCH2(TIM3) + 40);
+    }
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */

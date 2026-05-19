@@ -98,12 +98,24 @@ int main(void)
   /* USER CODE BEGIN 2 */
 
   SysTick_Config(SystemCoreClock / 1000);
+
+  LL_TIM_ClearFlag_UPDATE(TIM3);
+  LL_TIM_EnableCounter(TIM3);
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+ 	if (LL_TIM_IsActiveFlag_UPDATE(TIM3)) {
+
+        LL_TIM_ClearFlag_UPDATE(TIM3);
+
+        LL_GPIO_WriteReg(GPIOA, ODR,
+        	LL_GPIO_ReadReg(GPIOA, ODR) ^ LL_GPIO_PIN_10);
+
+  	}
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
