@@ -95,7 +95,7 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   /* USER CODE BEGIN 2 */
-  SysTick_Config(SystemCoreClock / 1000);
+  //SysTick_Config(SystemCoreClock / 1000);
   volatile uint32_t i;
   /* USER CODE END 2 */
 
