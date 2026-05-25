@@ -31,6 +31,11 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
+#define ADC_MAX_VALUE         255U   // Resolution is 8 bit
+#define ADC_DATA_MASK        0xFFU   // Extract only 8 rightmost bits
+#define TIM3_CLOCK_HZ    84000000U   // f = 84 MHz
+#define OUTPUT_FREQ_MIN_HZ      800U // Range = 800 - 4500 Hz
+#define OUTPUT_FREQ_MAX_HZ     4500U
 
 /* USER CODE END PD */
 
@@ -56,6 +61,20 @@ static void MX_TIM3_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+static uint16_t ADC_to_STEP(uint16_t adc_value)
+{
+  uint32_t frequency_range = OUTPUT_FREQ_MAX_HZ - OUTPUT_FREQ_MIN_HZ;
+
+  // adc_value : ADC_MAX_VALUE = frequency_offset : frequency_range
+  uint32_t frequency_offset = ((uint32_t)adc_value * frequency_range) / ADC_MAX_VALUE;
+
+  uint32_t output_frequency = OUTPUT_FREQ_MIN_HZ + frequency_offset; // We start from 800Hz
+
+  uint32_t timer_ticks_per_period = TIM3_CLOCK_HZ / output_frequency;
+  uint32_t timer_ticks_per_toggle = timer_ticks_per_period / 2U;
+
+  return (uint16_t)timer_ticks_per_toggle;
+}
 
 /* USER CODE END 0 */
 
@@ -98,6 +117,25 @@ int main(void)
   MX_ADC1_Init();
   MX_TIM3_Init();
   /* USER CODE BEGIN 2 */
+  SysTick_Config(SystemCoreClock / 1000);
+
+  // Initialize OC with min step
+  uint16_t tim3_step = ADC_to_STEP(0U);
+  LL_TIM_OC_SetCompareCH1(TIM3, LL_TIM_GetCounter(TIM3) + tim3_step);
+  LL_TIM_ClearFlag_CC1(TIM3);
+
+  // Initialize ADC
+  LL_ADC_WriteReg(ADC1, SR, 0);
+  LL_ADC_WriteReg(ADC1, CR2, LL_ADC_ReadReg(ADC1, CR2) | ADC_CR2_ADON);
+
+  for (volatile uint32_t i = 0; i < 1000; i++) {
+  }
+
+  LL_ADC_WriteReg(ADC1, CR2, LL_ADC_ReadReg(ADC1, CR2) | ADC_CR2_SWSTART);
+
+
+  // Start Counter
+  LL_TIM_EnableCounter(TIM3);
 
   /* USER CODE END 2 */
 
@@ -108,6 +146,23 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+
+    // Check if EOC is reached, compute new step with acquired value
+    if (LL_ADC_ReadReg(ADC1, SR) & ADC_SR_EOC) {
+      uint16_t adc_value = (uint16_t)(LL_ADC_ReadReg(ADC1, DR) & ADC_DATA_MASK);
+      LL_ADC_WriteReg(ADC1, SR, 0);
+
+      tim3_step = ADC_to_STEP(adc_value);
+    }
+
+    // Clear CC flag if set (toggling is handled by the timer)
+    if (LL_TIM_IsActiveFlag_CC1(TIM3)) {
+      LL_TIM_ClearFlag_CC1(TIM3);
+
+      // Update with new step
+      LL_TIM_OC_SetCompareCH1(TIM3,
+          LL_TIM_OC_GetCompareCH1(TIM3) + tim3_step);
+    }
   }
   /* USER CODE END 3 */
 }
@@ -193,7 +248,7 @@ static void MX_ADC1_Init(void)
 
   /** Common config
   */
-  ADC_InitStruct.Resolution = LL_ADC_RESOLUTION_12B;
+  ADC_InitStruct.Resolution = LL_ADC_RESOLUTION_8B;
   ADC_InitStruct.DataAlignment = LL_ADC_DATA_ALIGN_RIGHT;
   ADC_InitStruct.SequencersScanMode = LL_ADC_SEQ_SCAN_DISABLE;
   LL_ADC_Init(ADC1, &ADC_InitStruct);
@@ -248,7 +303,7 @@ static void MX_TIM3_Init(void)
   LL_TIM_DisableARRPreload(TIM3);
   LL_TIM_SetClockSource(TIM3, LL_TIM_CLOCKSOURCE_INTERNAL);
   TIM_OC_InitStruct.OCMode = LL_TIM_OCMODE_TOGGLE;
-  TIM_OC_InitStruct.OCState = LL_TIM_OCSTATE_DISABLE;
+  TIM_OC_InitStruct.OCState = LL_TIM_OCSTATE_ENABLE;
   TIM_OC_InitStruct.OCNState = LL_TIM_OCSTATE_DISABLE;
   TIM_OC_InitStruct.CompareValue = 0;
   TIM_OC_InitStruct.OCPolarity = LL_TIM_OCPOLARITY_HIGH;
