@@ -31,6 +31,11 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
+#define ADC_MAX_VALUE       255U
+#define ADC_DATA_MASK       0xFFU
+#define TIM3_CLOCK_HZ     	1000000U
+#define OUTPUT_FREQ_MIN_HZ  800U
+#define OUTPUT_FREQ_MAX_HZ  4500U
 
 /* USER CODE END PD */
 
@@ -42,6 +47,10 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
+
+// Define global variable containing step value
+// Updated in main() -> used in ISR
+volatile uint16_t tim3_step;
 
 /* USER CODE END PV */
 
@@ -56,6 +65,18 @@ static void MX_TIM3_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+
+static uint16_t ADC_to_STEP(uint16_t adc_value)
+{
+  uint32_t frequency_range = OUTPUT_FREQ_MAX_HZ - OUTPUT_FREQ_MIN_HZ;
+  uint32_t frequency_offset = ((uint32_t)adc_value * frequency_range) / ADC_MAX_VALUE;
+  uint32_t output_frequency = OUTPUT_FREQ_MIN_HZ + frequency_offset;
+
+  uint32_t timer_ticks_per_period = TIM3_CLOCK_HZ / output_frequency;
+  uint32_t timer_ticks_per_toggle = timer_ticks_per_period / 2U;
+
+  return (uint16_t)timer_ticks_per_toggle;
+}
 
 /* USER CODE END 0 */
 
@@ -99,6 +120,23 @@ int main(void)
   MX_TIM3_Init();
   /* USER CODE BEGIN 2 */
 
+  SysTick_Config(SystemCoreClock / 1000);
+
+  tim3_step = ADC_to_STEP(0U);
+
+  LL_TIM_OC_SetCompareCH1(TIM3, LL_TIM_GetCounter(TIM3) + tim3_step);
+  LL_TIM_ClearFlag_CC1(TIM3);
+  LL_TIM_EnableIT_CC1(TIM3);
+
+  LL_ADC_WriteReg(ADC1, SR, 0);
+  LL_ADC_WriteReg(ADC1, CR2, LL_ADC_ReadReg(ADC1, CR2) | ADC_CR2_ADON);
+
+  for (volatile uint32_t i = 0; i < 1000; i++) {}
+
+  LL_ADC_WriteReg(ADC1, CR2, LL_ADC_ReadReg(ADC1, CR2) | ADC_CR2_SWSTART);
+
+  LL_TIM_EnableCounter(TIM3);
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -108,6 +146,17 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+
+    // Check wether the ADC is done converting, compute new OC step value
+    if (LL_ADC_ReadReg(ADC1, SR) & ADC_SR_EOC) {
+
+      uint16_t adc_value = (uint16_t)(LL_ADC_ReadReg(ADC1, DR) & ADC_DATA_MASK);
+      tim3_step = ADC_to_STEP(adc_value);
+
+      // Reset SR, Restart conversion
+      LL_ADC_WriteReg(ADC1, SR, 0);
+      LL_ADC_WriteReg(ADC1, CR2, LL_ADC_ReadReg(ADC1, CR2) | ADC_CR2_SWSTART);
+    }
   }
   /* USER CODE END 3 */
 }
@@ -193,7 +242,7 @@ static void MX_ADC1_Init(void)
 
   /** Common config
   */
-  ADC_InitStruct.Resolution = LL_ADC_RESOLUTION_12B;
+  ADC_InitStruct.Resolution = LL_ADC_RESOLUTION_8B;
   ADC_InitStruct.DataAlignment = LL_ADC_DATA_ALIGN_RIGHT;
   ADC_InitStruct.SequencersScanMode = LL_ADC_SEQ_SCAN_DISABLE;
   LL_ADC_Init(ADC1, &ADC_InitStruct);
@@ -242,7 +291,7 @@ static void MX_TIM3_Init(void)
   /* USER CODE BEGIN TIM3_Init 1 */
 
   /* USER CODE END TIM3_Init 1 */
-  TIM_InitStruct.Prescaler = 84;
+  TIM_InitStruct.Prescaler = 83;
   TIM_InitStruct.CounterMode = LL_TIM_COUNTERMODE_UP;
   TIM_InitStruct.Autoreload = 65535;
   TIM_InitStruct.ClockDivision = LL_TIM_CLOCKDIVISION_DIV1;

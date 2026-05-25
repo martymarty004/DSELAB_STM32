@@ -57,6 +57,7 @@
 /* External variables --------------------------------------------------------*/
 
 /* USER CODE BEGIN EV */
+extern volatile uint16_t tim3_step;
 
 /* USER CODE END EV */
 
@@ -183,6 +184,11 @@ void PendSV_Handler(void)
 void SysTick_Handler(void)
 {
   /* USER CODE BEGIN SysTick_IRQn 0 */
+  static int x=0x12c0;
+
+  for(int i=0;i<x;i++);
+
+  x = (x >> 2) | (((x & 1)^(x & 2)) << 4);
 
   /* USER CODE END SysTick_IRQn 0 */
 
@@ -204,6 +210,19 @@ void SysTick_Handler(void)
 void TIM3_IRQHandler(void)
 {
   /* USER CODE BEGIN TIM3_IRQn 0 */
+
+  // Check if TIM3 requestested interrupt, clear flag
+  if (LL_TIM_IsActiveFlag_CC1(TIM3)) {
+    LL_TIM_ClearFlag_CC1(TIM3);
+
+    // Toggle PA10
+    LL_GPIO_WriteReg(GPIOA, ODR,
+        LL_GPIO_ReadReg(GPIOA, ODR) ^ LL_GPIO_PIN_10);
+
+    // Update OC threshold (tim3_step is GLOBAL)
+    LL_TIM_OC_SetCompareCH1(TIM3,
+        LL_TIM_OC_GetCompareCH1(TIM3) + tim3_step);
+  }
 
   /* USER CODE END TIM3_IRQn 0 */
   /* USER CODE BEGIN TIM3_IRQn 1 */

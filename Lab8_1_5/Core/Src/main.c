@@ -33,7 +33,7 @@
 /* USER CODE BEGIN PD */
 #define ADC_MAX_VALUE         255U   // Resolution is 8 bit
 #define ADC_DATA_MASK        0xFFU   // Extract only 8 rightmost bits
-#define TIM3_CLOCK_HZ    84000000U   // f = 84 MHz
+#define TIM3_CLOCK_HZ     1000000U   // f = 1 MHz
 #define OUTPUT_FREQ_MIN_HZ      800U // Range = 800 - 4500 Hz
 #define OUTPUT_FREQ_MAX_HZ     4500U
 
@@ -295,7 +295,7 @@ static void MX_TIM3_Init(void)
   /* USER CODE BEGIN TIM3_Init 1 */
 
   /* USER CODE END TIM3_Init 1 */
-  TIM_InitStruct.Prescaler = 0;
+  TIM_InitStruct.Prescaler = 83;
   TIM_InitStruct.CounterMode = LL_TIM_COUNTERMODE_UP;
   TIM_InitStruct.Autoreload = 65535;
   TIM_InitStruct.ClockDivision = LL_TIM_CLOCKDIVISION_DIV1;
