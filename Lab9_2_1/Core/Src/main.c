@@ -102,6 +102,9 @@ int main(void)
   MX_GPIO_Init();
   MX_TIM3_Init();
   /* USER CODE BEGIN 2 */
+
+  SysTick_Config(SystemCoreClock / 1000);
+
   uint16_t cnt = LL_TIM_GetCounter(TIM3);
 
   LL_TIM_OC_SetCompareCH1(TIM3, cnt + tim3_ch1_step);
