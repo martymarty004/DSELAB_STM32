@@ -57,6 +57,9 @@
 /* External variables --------------------------------------------------------*/
 
 /* USER CODE BEGIN EV */
+extern const uint16_t tim3_ch1_step;
+extern const uint16_t tim3_ch2_step;
+extern const uint16_t tim3_ch3_step;
 
 /* USER CODE END EV */
 
@@ -204,6 +207,26 @@ void SysTick_Handler(void)
 void TIM3_IRQHandler(void)
 {
   /* USER CODE BEGIN TIM3_IRQn 0 */
+  if (LL_TIM_IsActiveFlag_CC1(TIM3)) {
+    LL_TIM_ClearFlag_CC1(TIM3);
+
+    LL_TIM_OC_SetCompareCH1(TIM3,
+        LL_TIM_OC_GetCompareCH1(TIM3) + tim3_ch1_step);
+  }
+
+  if (LL_TIM_IsActiveFlag_CC2(TIM3)) {
+    LL_TIM_ClearFlag_CC2(TIM3);
+
+    LL_TIM_OC_SetCompareCH2(TIM3,
+        LL_TIM_OC_GetCompareCH2(TIM3) + tim3_ch2_step);
+  }
+
+  if (LL_TIM_IsActiveFlag_CC3(TIM3)) {
+    LL_TIM_ClearFlag_CC3(TIM3);
+
+    LL_TIM_OC_SetCompareCH3(TIM3,
+        LL_TIM_OC_GetCompareCH3(TIM3) + tim3_ch3_step);
+  }
 
   /* USER CODE END TIM3_IRQn 0 */
   /* USER CODE BEGIN TIM3_IRQn 1 */
