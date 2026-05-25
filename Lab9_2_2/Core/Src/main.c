@@ -31,6 +31,9 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
+#define TIM3_CH1_STEP_US      500U
+#define TIM3_CH2_STEP_US     1000U
+#define TIM3_CH3_STEP_US     2000U
 
 /* USER CODE END PD */
 
@@ -42,6 +45,9 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
+const uint16_t tim3_ch1_step = TIM3_CH1_STEP_US;
+const uint16_t tim3_ch2_step = TIM3_CH2_STEP_US;
+const uint16_t tim3_ch3_step = TIM3_CH3_STEP_US;
 
 /* USER CODE END PV */
 
@@ -98,6 +104,22 @@ int main(void)
   /* USER CODE BEGIN 2 */
 
   SysTick_Config(SystemCoreClock / 1000);
+
+  uint16_t cnt = LL_TIM_GetCounter(TIM3);
+
+  LL_TIM_OC_SetCompareCH1(TIM3, cnt + tim3_ch1_step);
+  LL_TIM_OC_SetCompareCH2(TIM3, cnt + tim3_ch2_step);
+  LL_TIM_OC_SetCompareCH3(TIM3, cnt + tim3_ch3_step);
+
+  LL_TIM_ClearFlag_CC1(TIM3);
+  LL_TIM_ClearFlag_CC2(TIM3);
+  LL_TIM_ClearFlag_CC3(TIM3);
+
+  LL_TIM_EnableIT_CC1(TIM3);
+  LL_TIM_EnableIT_CC2(TIM3);
+  LL_TIM_EnableIT_CC3(TIM3);
+
+  LL_TIM_EnableCounter(TIM3);
 
   /* USER CODE END 2 */
 
@@ -184,14 +206,14 @@ static void MX_TIM3_Init(void)
   /* USER CODE BEGIN TIM3_Init 1 */
 
   /* USER CODE END TIM3_Init 1 */
-  TIM_InitStruct.Prescaler = 0;
+  TIM_InitStruct.Prescaler = 83;
   TIM_InitStruct.CounterMode = LL_TIM_COUNTERMODE_UP;
   TIM_InitStruct.Autoreload = 65535;
   TIM_InitStruct.ClockDivision = LL_TIM_CLOCKDIVISION_DIV1;
   LL_TIM_Init(TIM3, &TIM_InitStruct);
   LL_TIM_DisableARRPreload(TIM3);
   LL_TIM_SetClockSource(TIM3, LL_TIM_CLOCKSOURCE_INTERNAL);
-  TIM_OC_InitStruct.OCMode = LL_TIM_OCMODE_FROZEN;
+  TIM_OC_InitStruct.OCMode = LL_TIM_OCMODE_TOGGLE;
   TIM_OC_InitStruct.OCState = LL_TIM_OCSTATE_ENABLE;
   TIM_OC_InitStruct.OCNState = LL_TIM_OCSTATE_DISABLE;
   TIM_OC_InitStruct.CompareValue = 0;
