@@ -210,6 +210,12 @@ void SysTick_Handler(void)
 void ADC_IRQHandler(void)
 {
   /* USER CODE BEGIN ADC_IRQn 0 */
+  if ((LL_ADC_ReadReg(ADC1, SR) & ADC_SR_EOC) != 0U)
+  {
+    adc_value = (uint16_t)(LL_ADC_ReadReg(ADC1, DR) & 0xFFU);
+    adc_value_ready = 1U;
+    LL_ADC_WriteReg(ADC1, SR, 0);
+  }
 
   /* USER CODE END ADC_IRQn 0 */
   /* USER CODE BEGIN ADC_IRQn 1 */
@@ -223,6 +229,26 @@ void ADC_IRQHandler(void)
 void TIM3_IRQHandler(void)
 {
   /* USER CODE BEGIN TIM3_IRQn 0 */
+  if (LL_TIM_IsActiveFlag_CC1(TIM3))
+  {
+    LL_TIM_ClearFlag_CC1(TIM3);
+    LL_TIM_OC_SetCompareCH1(TIM3,
+        LL_TIM_OC_GetCompareCH1(TIM3) + tim3_ch1_step);
+  }
+
+  if (LL_TIM_IsActiveFlag_CC2(TIM3))
+  {
+    LL_TIM_ClearFlag_CC2(TIM3);
+    LL_TIM_OC_SetCompareCH2(TIM3,
+        LL_TIM_OC_GetCompareCH2(TIM3) + tim3_ch2_step);
+  }
+
+  if (LL_TIM_IsActiveFlag_CC3(TIM3))
+  {
+    LL_TIM_ClearFlag_CC3(TIM3);
+    LL_TIM_OC_SetCompareCH3(TIM3,
+        LL_TIM_OC_GetCompareCH3(TIM3) + tim3_ch3_step);
+  }
 
   /* USER CODE END TIM3_IRQn 0 */
   /* USER CODE BEGIN TIM3_IRQn 1 */
@@ -236,6 +262,14 @@ void TIM3_IRQHandler(void)
 void TIM4_IRQHandler(void)
 {
   /* USER CODE BEGIN TIM4_IRQn 0 */
+  if (LL_TIM_IsActiveFlag_CC2(TIM4))
+  {
+    LL_TIM_ClearFlag_CC2(TIM4);
+    LL_TIM_OC_SetCompareCH2(TIM4,
+        LL_TIM_OC_GetCompareCH2(TIM4) + TIM4_ADC_TRIGGER_STEP);
+
+    LL_ADC_WriteReg(ADC1, CR2, LL_ADC_ReadReg(ADC1, CR2) | ADC_CR2_SWSTART);
+  }
 
   /* USER CODE END TIM4_IRQn 0 */
   /* USER CODE BEGIN TIM4_IRQn 1 */
@@ -255,6 +289,8 @@ void EXTI15_10_IRQHandler(void)
   {
     LL_EXTI_ClearFlag_0_31(LL_EXTI_LINE_13);
     /* USER CODE BEGIN LL_EXTI_LINE_13 */
+    LL_GPIO_WriteReg(GPIOA, ODR,
+        LL_GPIO_ReadReg(GPIOA, ODR) ^ LL_GPIO_PIN_5);
 
     /* USER CODE END LL_EXTI_LINE_13 */
   }

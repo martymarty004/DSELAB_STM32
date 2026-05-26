@@ -31,6 +31,15 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
+#define ADC_MAX_VALUE             255U
+#define ADC_DATA_MASK            0xFFU
+
+#define TIM3_CH1_MIN_PERIOD_US    100U
+#define TIM3_CH1_MAX_PERIOD_US   1000U
+#define TIM3_CH2_MIN_PERIOD_US    200U
+#define TIM3_CH2_MAX_PERIOD_US   2000U
+#define TIM3_CH3_MIN_PERIOD_US    400U
+#define TIM3_CH3_MAX_PERIOD_US   4000U
 
 /* USER CODE END PD */
 
@@ -42,6 +51,11 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
+volatile uint16_t tim3_ch1_step = TIM3_CH1_MIN_PERIOD_US / 2U;
+volatile uint16_t tim3_ch2_step = TIM3_CH2_MIN_PERIOD_US / 2U;
+volatile uint16_t tim3_ch3_step = TIM3_CH3_MIN_PERIOD_US / 2U;
+volatile uint16_t adc_value = 0U;
+volatile uint8_t adc_value_ready = 0U;
 
 /* USER CODE END PV */
 
@@ -57,9 +71,17 @@ static void MX_TIM4_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+static uint16_t ADC_to_STEP(uint16_t adc_value, uint16_t min_period, uint16_t max_period)
+{
+  uint32_t period_range = (uint32_t)max_period - min_period;
+  uint32_t period_offset = ((uint32_t)adc_value * period_range) / ADC_MAX_VALUE;TIM3_CH1_MIN_PERIOD_US
+  uint32_t output_period = min_period + period_offset;
+
+  return (uint16_t)(output_period / 2U);
+}
 
 /* USER CODE END 0 */
-
+TIM3_CH1_MIN_PERIOD_US
 /**
   * @brief  The application entry point.
   * @retval int
@@ -103,6 +125,37 @@ int main(void)
 
   SysTick_Config(SystemCoreClock / 1000);
 
+  uint16_t tim3_cnt = LL_TIM_GetCounter(TIM3);
+
+  LL_TIM_OC_SetCompareCH1(TIM3, tim3_cnt + tim3_ch1_step);
+  LL_TIM_OC_SetCompareCH2(TIM3, tim3_cnt + tim3_ch2_step);
+  LL_TIM_OC_SetCompareCH3(TIM3, tim3_cnt + tim3_ch3_step);
+
+  LL_TIM_ClearFlag_CC1(TIM3);
+  LL_TIM_ClearFlag_CC2(TIM3);
+  LL_TIM_ClearFlag_CC3(TIM3);
+
+  LL_TIM_EnableIT_CC1(TIM3);
+  LL_TIM_EnableIT_CC2(TIM3);
+  LL_TIM_EnableIT_CC3(TIM3);
+
+  LL_ADC_WriteReg(ADC1, SR, 0);
+  LL_ADC_WriteReg(ADC1, CR2, LL_ADC_ReadReg(ADC1, CR2) | ADC_CR2_ADON);
+  LL_ADC_WriteReg(ADC1, CR1, LL_ADC_ReadReg(ADC1, CR1) | ADC_CR1_EOCIE);
+
+  for (volatile uint32_t i = 0; i < 1000; i++)
+  {
+  }
+
+  uint16_t tim4_cnt = LL_TIM_GetCounter(TIM4);
+
+  LL_TIM_OC_SetCompareCH2(TIM4, tim4_cnt + TIM4_ADC_TRIGGER_STEP);
+  LL_TIM_ClearFlag_CC2(TIM4);
+  LL_TIM_EnableIT_CC2(TIM4);
+
+  LL_TIM_EnableCounter(TIM3);
+  LL_TIM_EnableCounter(TIM4);
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -112,6 +165,14 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+    if (adc_value_ready != 0U)
+    {
+      adc_value_ready = 0U;
+
+      tim3_ch1_step = ADC_to_STEP(adc_value, TIM3_CH1_MIN_PERIOD_US, TIM3_CH1_MAX_PERIOD_US);
+      tim3_ch2_step = ADC_to_STEP(adc_value, TIM3_CH2_MIN_PERIOD_US, TIM3_CH2_MAX_PERIOD_US);
+      tim3_ch3_step = ADC_to_STEP(adc_value, TIM3_CH3_MIN_PERIOD_US, TIM3_CH3_MAX_PERIOD_US);
+    }
   }
   /* USER CODE END 3 */
 }
@@ -147,7 +208,7 @@ void SystemClock_Config(void)
   {
   }
   LL_RCC_SetAHBPrescaler(LL_RCC_SYSCLK_DIV_1);
-  LL_RCC_SetAPB1Prescaler(LL_RCC_APB1_DIV_4);
+  LL_RCC_SetAPB1Prescaler(LL_RCC_APB1_DIV_2);
   LL_RCC_SetAPB2Prescaler(LL_RCC_APB2_DIV_1);
   LL_RCC_SetSysClkSource(LL_RCC_SYS_CLKSOURCE_PLL);
 
@@ -322,10 +383,10 @@ static void MX_TIM4_Init(void)
   NVIC_SetPriority(TIM4_IRQn, NVIC_EncodePriority(NVIC_GetPriorityGrouping(),0, 0));
   NVIC_EnableIRQ(TIM4_IRQn);
 
-  /* USER CODE BEGIN TIM4_Init 1 */
+  /* USER CODE BEGIN TIM4_Init 1 */TIM3_CH1_MIN_PERIOD_US
 
   /* USER CODE END TIM4_Init 1 */
-  TIM_InitStruct.Prescaler = 83;
+  TIM_InitStruct.Prescaler = 8399;
   TIM_InitStruct.CounterMode = LL_TIM_COUNTERMODE_UP;
   TIM_InitStruct.Autoreload = 65535;
   TIM_InitStruct.ClockDivision = LL_TIM_CLOCKDIVISION_DIV1;

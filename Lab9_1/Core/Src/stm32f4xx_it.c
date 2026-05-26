@@ -211,7 +211,7 @@ void TIM3_IRQHandler(void)
 {
   /* USER CODE BEGIN TIM3_IRQn 0 */
 
-  // Check if TIM3 requestested interrupt, clear flag
+  // Check if TIM3 requested interrupt, clear flag
   if (LL_TIM_IsActiveFlag_CC1(TIM3)) {
     LL_TIM_ClearFlag_CC1(TIM3);
 

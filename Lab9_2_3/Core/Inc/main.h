@@ -55,6 +55,11 @@ extern "C" {
 
 /* Exported constants --------------------------------------------------------*/
 /* USER CODE BEGIN EC */
+extern volatile uint16_t tim3_ch1_step;
+extern volatile uint16_t tim3_ch2_step;
+extern volatile uint16_t tim3_ch3_step;
+extern volatile uint16_t adc_value;
+extern volatile uint8_t adc_value_ready;
 
 /* USER CODE END EC */
 
@@ -85,6 +90,7 @@ void Error_Handler(void);
 #endif
 
 /* USER CODE BEGIN Private defines */
+#define TIM4_ADC_TRIGGER_STEP    5000U
 
 /* USER CODE END Private defines */
 

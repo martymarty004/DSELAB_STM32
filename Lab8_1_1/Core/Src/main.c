@@ -112,8 +112,11 @@ int main(void)
   {
  	uint16_t cnt = LL_TIM_ReadReg(TIM3, CNT);
 
-  	// SysClk = 84Mhz, PSC = 83 -> Timer works at 1MHz, toggle every 250 ticks to achieve f_toggle=4KHz -> f=2KHz
-  	if ((uint16_t)(cnt - last_cnt) == 250) {
+  	// SysClk = 84Mhz, PSC = 10 -> Timer works at 8.4MHz, toggle every 2100 ticks to achieve f_toggle=4KHz -> f=2KHz
+  	if ((uint16_t)(cnt - last_cnt) >= 2100) {
+   	// SysClk = 84Mhz, PSC = 83 -> Timer works at 1MHz, toggle every 250 ticks to achieve f_toggle=4KHz -> f=2KHz
+    // CPU is TOO FAST, polling works fine
+    // if ((uint16_t)(cnt - last_cnt) >= 250) {
   		last_cnt = cnt;
 
    		LL_GPIO_WriteReg(GPIOA, ODR,
@@ -192,7 +195,7 @@ static void MX_TIM3_Init(void)
   /* USER CODE BEGIN TIM3_Init 1 */
 
   /* USER CODE END TIM3_Init 1 */
-  TIM_InitStruct.Prescaler = 83;
+  TIM_InitStruct.Prescaler = 10;
   TIM_InitStruct.CounterMode = LL_TIM_COUNTERMODE_UP;
   TIM_InitStruct.Autoreload = 65535;
   TIM_InitStruct.ClockDivision = LL_TIM_CLOCKDIVISION_DIV1;
